@@ -907,7 +907,11 @@ export class PostgresDriver implements Driver {
      */
     protected loadDependencies(): void {
         try {
+            if (this.options.pgDriverLibrary) {
+                this.postgres = this.options.pgDriverLibrary;
+            } else {
                 this.postgres = PlatformTools.load("pg");
+            }
             try {
                 const pgNative = PlatformTools.load("pg-native");
                 if (pgNative && this.postgres.native) this.postgres = this.postgres.native;

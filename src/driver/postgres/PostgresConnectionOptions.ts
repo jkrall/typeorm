@@ -46,4 +46,9 @@ export interface PostgresConnectionOptions extends BaseConnectionOptions, Postgr
     * Defaults to logging error with `warn` level.
      */
     readonly poolErrorHandler?: (err: any) => any;
+
+    /**
+     * Support injecting pg driver library, to allow for instrumentation hooks (eg: AWS X-Ray)
+     */
+    readonly pgDriverLibrary: any;
 }
