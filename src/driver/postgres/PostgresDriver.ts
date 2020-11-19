@@ -771,9 +771,17 @@ export class PostgresDriver implements Driver {
      */
     obtainMasterConnection(): Promise<any> {
         return new Promise((ok, fail) => {
-            this.master.connect((err: any, connection: any, release: any) => {
-                err ? fail(err) : ok([connection, release]);
-            });
+            if (!this.master) {
+                this.connect().then(() => {
+                    this.master.connect((err: any, connection: any, release: any) => {
+                        err ? fail(err) : ok([connection, release]);
+                    });
+                })
+            } else {
+                this.master.connect((err: any, connection: any, release: any) => {
+                    err ? fail(err) : ok([connection, release]);
+                });
+            }
         });
     }
 
@@ -899,7 +907,7 @@ export class PostgresDriver implements Driver {
      */
     protected loadDependencies(): void {
         try {
-            this.postgres = PlatformTools.load("pg");
+                this.postgres = PlatformTools.load("pg");
             try {
                 const pgNative = PlatformTools.load("pg-native");
                 if (pgNative && this.postgres.native) this.postgres = this.postgres.native;
